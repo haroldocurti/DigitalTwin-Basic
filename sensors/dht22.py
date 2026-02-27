@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from random import gauss, uniform
-from struct import pack
+from struct import pack, unpack
 
 from core import Sensor, Env_Model
 
@@ -57,6 +57,16 @@ class Dht22(Sensor):
             value |= 0x8000
             return pack('>H',value)
         return pack('>H',value)
+    
+    def get_bin_payload(self):
+        temp_bin = self.convert_to_bin(self.last_temp)
+        hum_bin = self.convert_to_bin(self.last_hum)
+        temp_msb, temp_lsb = unpack('BB', temp_bin)
+        hum_msb, hum_lsb = unpack('BB', hum_bin)
+        checksum = (temp_msb + temp_lsb + hum_msb + hum_lsb) & 0xFF
+        (h_val,) = unpack('>H', hum_bin)
+        (t_val,) = unpack('>H', temp_bin)
+        return pack('>HHB', h_val, t_val, checksum)
     
     def __repr__(self):
         return (f"{self.__class__.__name__}(id='{self.sensor_id}', "

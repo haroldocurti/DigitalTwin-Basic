@@ -64,16 +64,21 @@ Release v0.1 Note: This version focuses strictly on sensor and environment physi
 * Env_Model: O motor de contexto (A Verdade). / The context engine (The Truth).
 * Dht22: O hardware emulado (A Percepção). / The emulated hardware (The Perception).
 
-  ## Release Notes
+## Release Notes
 
-### Current Release: v0.1 (Alpha)
-* Arquitetura modular separando ambiente (core/environment.py) e sensores (sensors/).
-* Implementação completa do sensor DHT22 com modelagem de inércia e ruído.
-* Sistema de estações do ano (Season) com parâmetros senoidais.
-* Métodos __repr__ e __str__ customizados para depuração e visualização didática (binário/decimal).
-* Preparação para sistema de plugins de sensores.
+### Current Release: v0.1.2
+* Adição do sensor DHT11.
+* Implementação de limites físicos específicos para o DHT11 (bloqueio de valores negativos).
+* Refinamento da função get_bin_payload para garantir integridade do bit de sinal no Checksum.
+
+### Release: v0.1.1
+* Implementação do cálculo de Checksum real (soma de 8 bits) conforme datasheet.
+* Padronização do payload de 5 bytes (40 bits) para transporte de dados.
+
+### Release: v0.1.0 (Alpha)
+* Arquitetura modular inicial: core/ (ambiente e base) e sensors/ (plugins).
+* Modelagem de inércia térmica e ruído gaussiano para simulação realista.
+* Sistema de estações do ano com comportamento senoidal.
 
 ### Previous Release: v0.0.1 (Pre-Alpha)
-* Script único com lógica básica de temperatura senoidal.
-* Protótipo inicial da classe DHT22.
-* Implementação da conversão binária para o protocolo de 16 bits.
+* Script único com lógica básica de temperatura e protótipo inicial de classes.

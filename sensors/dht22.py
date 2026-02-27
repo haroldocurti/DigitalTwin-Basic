@@ -5,10 +5,12 @@ from struct import pack
 from core import Sensor, Env_Model
 
 class Dht22(Sensor):
-    def __init__(self,sensor_id, env_model: Env_Model, state=True, bin=False):
+    def __init__(self,sensor_id, env_model: Env_Model,min_temp=-40.0, max_temp=80.0, state=True, bin=False):
         super().__init__(sensor_id,state)
         self.env_model = env_model
         self.bin = bin
+        self.min_temp = min_temp
+        self.max_temp = max_temp
         now = datetime.now()
         self.last_access = now
         self.last_temp = self.env_model.get_env_temp(now)
@@ -39,7 +41,7 @@ class Dht22(Sensor):
         self.env_model.update_env(now)
         updated_temp = self.add_temp_noise_and_relaxation(self.env_model.env_temp)
         updated_hum = self.add_hum_noise_and_relaxation(self.env_model.env_hum)        
-        temp = max(-40.0, min(80.0, updated_temp))
+        temp = max(self.min_temp, min(self.max_temp, updated_temp))
         hum = max(0.0, min(100.0, updated_hum))
         self.last_access = now
         return {
@@ -57,7 +59,7 @@ class Dht22(Sensor):
         return pack('>H',value)
     
     def __repr__(self):
-        return (f"Dht22(id='{self.sensor_id}', "
+        return (f"{self.__class__.__name__}(id='{self.sensor_id}', "
                 f"state={self.state}, "
                 f"mode={'Binary' if self.bin else 'Decimal'}, "
                 f"last_temp={round(self.last_temp, 1)}°C, "
